@@ -13223,7 +13223,9 @@ div#notebook {
         <span class="kn">import</span> <span class="nn">random</span>
         <span class="kn">import</span> <span class="nn">math</span>
         
-        <span class="n">opo</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'../oportunidades.csv'</span><span class="p">)</span>
+        <span class="n">opo</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'../oportunidades_results.csv'</span><span class="p">)</span>
+        <span class="c1"># opo = opo.iloc[np.where(opo['opo_brazil']=='Y')]</span>
+        
         <span class="k">try</span><span class="p">:</span>
             <span class="n">lda_model</span> <span class="o">=</span> <span class="n">gensim</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">ldamodel</span><span class="o">.</span><span class="n">LdaModel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s1">'models/lda_model</span><span class="si">{</span><span class="n">n_users</span><span class="si">}</span><span class="s1">.model'</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
@@ -13260,22 +13262,23 @@ div#notebook {
 <span class="sd">        and ratings are relatively equally occurrent.</span>
 <span class="sd">        '''</span>
         
-        <span class="n">n_users</span> <span class="o">=</span> <span class="mi">20</span>
-        <span class="n">n_ratings</span> <span class="o">=</span> <span class="mi">10000</span>
+        <span class="n">n_users</span> <span class="o">=</span> <span class="mi">9</span>
+        <span class="n">n_ratings</span> <span class="o">=</span> <span class="mi">5000</span>
         
         <span class="kn">import</span> <span class="nn">gensim</span>
         <span class="kn">import</span> <span class="nn">random</span>
         <span class="kn">import</span> <span class="nn">math</span>
+        <span class="kn">import</span> <span class="nn">tqdm</span>
         
         <span class="n">opo</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'../oportunidades.csv'</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">lda_model</span> <span class="o">=</span> <span class="n">gensim</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">ldamodel</span><span class="o">.</span><span class="n">LdaModel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s1">'models/lda_model</span><span class="si">{</span><span class="n">n_users</span><span class="si">}</span><span class="s1">.model'</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">generate_users</span>
-            <span class="n">generate_users</span><span class="o">.</span><span class="n">gen_model</span><span class="p">(</span><span class="n">n_users</span><span class="p">)</span>
-            <span class="n">lda_model</span> <span class="o">=</span> <span class="n">gensim</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">ldamodel</span><span class="o">.</span><span class="n">LdaModel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s1">'models/lda_model</span><span class="si">{</span><span class="n">n_users</span><span class="si">}</span><span class="s1">.model'</span><span class="p">)</span>
+        <span class="c1"># opo = opo.iloc[np.where(opo['opo_brazil']=='Y')]</span>
+        
+        <span class="n">path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'models/output_linkedin_cle_lda_model_</span><span class="si">{</span><span class="n">n_users</span><span class="si">}</span><span class="s1">_topics_symmetric_alpha_auto_beta'</span>
+        <span class="n">lda_model</span> <span class="o">=</span> <span class="n">gensim</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">ldamodel</span><span class="o">.</span><span class="n">LdaModel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         
         <span class="n">df</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="n">pbar</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span> <span class="n">n_ratings</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_ratings</span><span class="p">):</span>
             <span class="n">opo_n</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">opo</span><span class="p">))</span>
             <span class="n">txt</span> <span class="o">=</span> <span class="n">opo</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">opo_n</span><span class="p">,</span><span class="s1">'opo_texto'</span><span class="p">]</span>
@@ -13292,7 +13295,9 @@ div#notebook {
             <span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
             <span class="n">df</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">prop</span><span class="p">[</span><span class="s1">'index'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">opo_n</span><span class="p">,</span> <span class="n">prop</span><span class="p">[</span><span class="s1">'rating'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
+        <span class="n">pbar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'userID'</span><span class="p">,</span> <span class="s1">'itemID'</span><span class="p">,</span> <span class="s1">'rating'</span><span class="p">])</span>
         
 </pre></div>
@@ -13311,12 +13316,12 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [13]:</div>
+<div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">=</span><span class="n">Data</span><span class="p">()</span>
 <span class="n">data</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="s1">'lda_rankings'</span><span class="p">)</span>
-<span class="n">data</span><span class="o">.</span><span class="n">df</span>
+<span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">'simulation2.csv'</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13329,107 +13334,13 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[13]:</div>
+    <div class="prompt"></div>
 
 
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>userID</th>
-      <th>itemID</th>
-      <th>rating</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>13</td>
-      <td>736</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>17</td>
-      <td>254</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>11</td>
-      <td>429</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>8</td>
-      <td>82</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>19</td>
-      <td>501</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>9995</th>
-      <td>5</td>
-      <td>520</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <th>9996</th>
-      <td>5</td>
-      <td>92</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <th>9997</th>
-      <td>9</td>
-      <td>87</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <th>9998</th>
-      <td>10</td>
-      <td>612</td>
-      <td>5</td>
-    </tr>
-    <tr>
-      <th>9999</th>
-      <td>8</td>
-      <td>406</td>
-      <td>2</td>
-    </tr>
-  </tbody>
-</table>
-<p>10000 rows × 3 columns</p>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>100%|█████████████████████████████████████████████████████████████████████████████| 5000/5000 [00:31&lt;00:00, 158.33it/s]
+</pre>
 </div>
-</div>
-
 </div>
 
 </div>
@@ -13677,7 +13588,7 @@ The avaliable evaluators are:
 1: surprise.mse
 2: surprise.mae
 3: surprise.fcp
-MSE: 0.1512
+MSE: 0.9224
 </pre>
 </div>
 </div>
@@ -13700,12 +13611,15 @@ MSE: 0.1512
 <span class="sd">    4 different accuracy metrics.</span>
 <span class="sd">    '''</span>
     
+    <span class="kn">import</span> <span class="nn">tqdm</span>
+    
     <span class="n">table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
     
     <span class="n">data</span><span class="o">=</span><span class="n">Data</span><span class="p">()</span>
     <span class="n">data</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
     
     <span class="n">method</span><span class="o">=</span><span class="n">Method</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+    
     
     <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">available_methods</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
@@ -13722,6 +13636,7 @@ MSE: 0.1512
         <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">evaluator</span><span class="o">.</span><span class="n">available_evaluators</span><span class="p">,</span><span class="n">metrics</span><span class="p">)),</span><span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         
     <span class="n">table</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">9</span><span class="p">:]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">available_methods</span><span class="p">]</span>
+    <span class="n">table</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">9</span><span class="p">:]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">available_evaluators</span><span class="p">]</span>
             
     <span class="k">return</span> <span class="n">table</span>
 
@@ -13731,7 +13646,7 @@ MSE: 0.1512
 <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="c1"># Codigo para desativar os prints</span>
 
 <span class="n">uniform</span> <span class="o">=</span> <span class="n">model_table</span><span class="p">(</span><span class="s1">'uniform'</span><span class="p">)</span>  
-<span class="n">topics</span> <span class="o">=</span> <span class="n">model_table</span><span class="p">(</span><span class="s1">'lda_topics'</span><span class="p">)</span>
+<span class="c1">#topics = model_table('lda_topics')</span>
 <span class="n">ranking</span> <span class="o">=</span> <span class="n">model_table</span><span class="p">(</span><span class="s1">'lda_rankings'</span><span class="p">)</span>
 
 <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">__stdout__</span> <span class="c1"># Codigo para reativar os prints</span>
@@ -13753,8 +13668,7 @@ MSE: 0.1512
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>C:\Users\vitor\AppData\Roaming\Python\Python37\site-packages\ipykernel_launcher.py:47: DeprecationWarning: `np.int` is a deprecated alias for the builtin `int`. To silence this warning, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
 Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
-C:\Users\vitor\AppData\Roaming\Python\Python37\site-packages\ipykernel_launcher.py:47: DeprecationWarning: `np.int` is a deprecated alias for the builtin `int`. To silence this warning, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
-Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+100%|█████████████████████████████████████████████████████████████████████████████| 5000/5000 [00:25&lt;00:00, 197.66it/s]
 C:\Users\vitor\AppData\Roaming\Python\Python37\site-packages\ipykernel_launcher.py:47: DeprecationWarning: `np.int` is a deprecated alias for the builtin `int`. To silence this warning, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
 Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
 </pre>
@@ -13770,7 +13684,8 @@ Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdo
 <div class="prompt input_prompt">In [8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">uniform</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># LDA-GENERATED DATASET</span>
+<span class="n">ranking</span>
 </pre></div>
 
     </div>
@@ -13806,89 +13721,89 @@ Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdo
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>surprise.rmse</th>
-      <th>surprise.mse</th>
-      <th>surprise.mae</th>
-      <th>surprise.fcp</th>
+      <th>RMSE</th>
+      <th>MSE</th>
+      <th>MAE</th>
+      <th>FCP</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>NormalPredictor</th>
-      <td>1.534804</td>
-      <td>2.355623</td>
-      <td>1.250746</td>
-      <td>0.491641</td>
+      <td>1.804259</td>
+      <td>3.255350</td>
+      <td>1.467780</td>
+      <td>0.494004</td>
     </tr>
     <tr>
       <th>BaselineOnly</th>
-      <td>1.134006</td>
-      <td>1.285971</td>
-      <td>1.001062</td>
-      <td>0.491694</td>
+      <td>1.205625</td>
+      <td>1.453532</td>
+      <td>0.992576</td>
+      <td>0.511330</td>
     </tr>
     <tr>
       <th>KNNBasic</th>
-      <td>1.202139</td>
-      <td>1.445138</td>
-      <td>1.031629</td>
-      <td>0.493996</td>
+      <td>1.369231</td>
+      <td>1.874793</td>
+      <td>1.042901</td>
+      <td>0.609958</td>
     </tr>
     <tr>
       <th>KNNWithMeans</th>
-      <td>1.215825</td>
-      <td>1.478229</td>
-      <td>1.038545</td>
-      <td>0.492914</td>
+      <td>1.147743</td>
+      <td>1.317314</td>
+      <td>0.838187</td>
+      <td>0.648390</td>
     </tr>
     <tr>
       <th>KNNWithZScore</th>
-      <td>1.207519</td>
-      <td>1.458102</td>
-      <td>1.037799</td>
-      <td>0.503013</td>
+      <td>1.152362</td>
+      <td>1.327938</td>
+      <td>0.839331</td>
+      <td>0.663553</td>
     </tr>
     <tr>
       <th>KNNBaseline</th>
-      <td>1.202906</td>
-      <td>1.446983</td>
-      <td>1.028633</td>
-      <td>0.493364</td>
+      <td>1.197815</td>
+      <td>1.434760</td>
+      <td>0.891482</td>
+      <td>0.637661</td>
     </tr>
     <tr>
       <th>SVD</th>
-      <td>1.193280</td>
-      <td>1.423917</td>
-      <td>1.028005</td>
-      <td>0.489487</td>
+      <td>0.938683</td>
+      <td>0.881125</td>
+      <td>0.700552</td>
+      <td>0.755073</td>
     </tr>
     <tr>
       <th>SVDpp</th>
-      <td>1.200286</td>
-      <td>1.440688</td>
-      <td>1.030948</td>
-      <td>0.497485</td>
+      <td>0.932690</td>
+      <td>0.869911</td>
+      <td>0.652858</td>
+      <td>0.748874</td>
     </tr>
     <tr>
       <th>NMF</th>
-      <td>1.341951</td>
-      <td>1.800833</td>
-      <td>1.125911</td>
-      <td>0.491918</td>
+      <td>1.202484</td>
+      <td>1.445968</td>
+      <td>0.784358</td>
+      <td>0.678201</td>
     </tr>
     <tr>
       <th>SlopeOne</th>
-      <td>1.197672</td>
-      <td>1.434417</td>
-      <td>1.017256</td>
-      <td>0.500680</td>
+      <td>1.120445</td>
+      <td>1.255398</td>
+      <td>0.826335</td>
+      <td>0.668528</td>
     </tr>
     <tr>
       <th>CoClustering</th>
-      <td>1.240663</td>
-      <td>1.539245</td>
-      <td>1.048486</td>
-      <td>0.492643</td>
+      <td>1.344250</td>
+      <td>1.807009</td>
+      <td>1.033472</td>
+      <td>0.558972</td>
     </tr>
   </tbody>
 </table>
@@ -13906,7 +13821,8 @@ Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdo
 <div class="prompt input_prompt">In [9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">topics</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># BENCHMARK DATASET</span>
+<span class="n">uniform</span>
 </pre></div>
 
     </div>
@@ -13942,225 +13858,89 @@ Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdo
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>surprise.rmse</th>
-      <th>surprise.mse</th>
-      <th>surprise.mae</th>
-      <th>surprise.fcp</th>
+      <th>RMSE</th>
+      <th>MSE</th>
+      <th>MAE</th>
+      <th>FCP</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>NormalPredictor</th>
-      <td>0.649374</td>
-      <td>0.421686</td>
-      <td>0.427919</td>
-      <td>0.435448</td>
+      <td>1.492993</td>
+      <td>2.229027</td>
+      <td>1.215566</td>
+      <td>0.508747</td>
     </tr>
     <tr>
       <th>BaselineOnly</th>
-      <td>0.421905</td>
-      <td>0.178004</td>
-      <td>0.248629</td>
-      <td>0.734866</td>
+      <td>1.141522</td>
+      <td>1.303073</td>
+      <td>1.011387</td>
+      <td>0.493790</td>
     </tr>
     <tr>
       <th>KNNBasic</th>
-      <td>0.444912</td>
-      <td>0.197947</td>
-      <td>0.245562</td>
-      <td>0.745807</td>
+      <td>1.215254</td>
+      <td>1.476843</td>
+      <td>1.040800</td>
+      <td>0.489235</td>
     </tr>
     <tr>
       <th>KNNWithMeans</th>
-      <td>0.398414</td>
-      <td>0.158734</td>
-      <td>0.227852</td>
-      <td>0.767610</td>
+      <td>1.209456</td>
+      <td>1.462784</td>
+      <td>1.034739</td>
+      <td>0.483577</td>
     </tr>
     <tr>
       <th>KNNWithZScore</th>
-      <td>0.386460</td>
-      <td>0.149351</td>
-      <td>0.207170</td>
-      <td>0.761540</td>
+      <td>1.218065</td>
+      <td>1.483681</td>
+      <td>1.045269</td>
+      <td>0.498226</td>
     </tr>
     <tr>
       <th>KNNBaseline</th>
-      <td>0.385385</td>
-      <td>0.148521</td>
-      <td>0.221078</td>
-      <td>0.819626</td>
+      <td>1.225382</td>
+      <td>1.501562</td>
+      <td>1.048278</td>
+      <td>0.488941</td>
     </tr>
     <tr>
       <th>SVD</th>
-      <td>0.375885</td>
-      <td>0.141290</td>
-      <td>0.211979</td>
-      <td>0.804881</td>
+      <td>1.190484</td>
+      <td>1.417251</td>
+      <td>1.033332</td>
+      <td>0.499369</td>
     </tr>
     <tr>
       <th>SVDpp</th>
-      <td>0.359489</td>
-      <td>0.129233</td>
-      <td>0.206338</td>
-      <td>0.783897</td>
+      <td>1.208144</td>
+      <td>1.459612</td>
+      <td>1.036668</td>
+      <td>0.493682</td>
     </tr>
     <tr>
       <th>NMF</th>
-      <td>0.298130</td>
-      <td>0.088882</td>
-      <td>0.117041</td>
-      <td>0.835527</td>
+      <td>1.339499</td>
+      <td>1.794257</td>
+      <td>1.117272</td>
+      <td>0.495636</td>
     </tr>
     <tr>
       <th>SlopeOne</th>
-      <td>0.338028</td>
-      <td>0.114263</td>
-      <td>0.194162</td>
-      <td>0.832792</td>
+      <td>1.226202</td>
+      <td>1.503571</td>
+      <td>1.047067</td>
+      <td>0.498251</td>
     </tr>
     <tr>
       <th>CoClustering</th>
-      <td>0.419139</td>
-      <td>0.175677</td>
-      <td>0.216329</td>
-      <td>0.678977</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ranking</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[10]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>surprise.rmse</th>
-      <th>surprise.mse</th>
-      <th>surprise.mae</th>
-      <th>surprise.fcp</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>NormalPredictor</th>
-      <td>1.841699</td>
-      <td>3.391856</td>
-      <td>1.509347</td>
-      <td>0.505111</td>
-    </tr>
-    <tr>
-      <th>BaselineOnly</th>
-      <td>1.067423</td>
-      <td>1.139391</td>
-      <td>0.858431</td>
-      <td>0.572340</td>
-    </tr>
-    <tr>
-      <th>KNNBasic</th>
-      <td>1.123141</td>
-      <td>1.261446</td>
-      <td>0.891902</td>
-      <td>0.694179</td>
-    </tr>
-    <tr>
-      <th>KNNWithMeans</th>
-      <td>0.934017</td>
-      <td>0.872388</td>
-      <td>0.703772</td>
-      <td>0.731334</td>
-    </tr>
-    <tr>
-      <th>KNNWithZScore</th>
-      <td>0.947603</td>
-      <td>0.897952</td>
-      <td>0.715690</td>
-      <td>0.718407</td>
-    </tr>
-    <tr>
-      <th>KNNBaseline</th>
-      <td>0.912495</td>
-      <td>0.832646</td>
-      <td>0.690320</td>
-      <td>0.722609</td>
-    </tr>
-    <tr>
-      <th>SVD</th>
-      <td>0.829436</td>
-      <td>0.687964</td>
-      <td>0.605397</td>
-      <td>0.808765</td>
-    </tr>
-    <tr>
-      <th>SVDpp</th>
-      <td>0.836658</td>
-      <td>0.699996</td>
-      <td>0.602738</td>
-      <td>0.779652</td>
-    </tr>
-    <tr>
-      <th>NMF</th>
-      <td>0.859389</td>
-      <td>0.738550</td>
-      <td>0.554761</td>
-      <td>0.781849</td>
-    </tr>
-    <tr>
-      <th>SlopeOne</th>
-      <td>0.892899</td>
-      <td>0.797268</td>
-      <td>0.671398</td>
-      <td>0.735438</td>
-    </tr>
-    <tr>
-      <th>CoClustering</th>
-      <td>1.130019</td>
-      <td>1.276943</td>
-      <td>0.878934</td>
-      <td>0.585100</td>
+      <td>1.249802</td>
+      <td>1.562006</td>
+      <td>1.056043</td>
+      <td>0.503745</td>
     </tr>
   </tbody>
 </table>
